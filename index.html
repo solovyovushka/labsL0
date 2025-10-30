@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Order Viewer</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        #out { background: #f4f4f4; padding: 10px; border: 1px solid #ddd; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h2>Order Viewer</h2>
+    <input type="text" id="uid" placeholder="Order UID" />
+    <button onclick="load()">Show</button>
+    <pre id="out">Enter an Order UID to view details.</pre>
+    
+    <script>
+        async function load() {
+            const uid = document.getElementById('uid').value;
+            const out = document.getElementById('out');
+            
+            if (!uid) {
+                out.textContent = 'Error: Please enter a valid UID.';
+                return;
+            }
+            
+            const res = await fetch('/order/' + encodeURIComponent(uid));
+
+            if (res.ok) {
+                const data = await res.json();
+                out.textContent = JSON.stringify(data, null, 2);
+            } else {
+                const errorText = await res.text();
+                out.textContent = 'Error: ' + res.status + ' ' + errorText;
+            }
+        }
+    </script>
+</body>
+</html>
